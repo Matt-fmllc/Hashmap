@@ -4,8 +4,25 @@
 #include "CHashmap.h"
 #include <unordered_map>
 
-//#include "CHashmap.h"
+#include "THashmap.h"
 
+void TemplateHashMapPractice()
+{
+//	THashMap<int, int, 1024, THashMap<typename K,typename V,size_t 1024,typename F>::KeyHash> HashMap;
+
+	THashMap<int, int, 1024, KeyHash<int, 1024> > HashMap;
+
+	HashMap.Put(1, 5);
+	HashMap.Put(2, 2);
+	HashMap.Put(3, 7);
+
+	int iVal1, iVal2, iVal3;
+	HashMap.Get(1, iVal1);
+	HashMap.Get(2, iVal2);
+	HashMap.Get(3, iVal3);
+
+	printf("\n iVal1 = %d, iVal2 = %d, iVal3 = %d", iVal1, iVal2, iVal3);
+}
 
 void CustomHashMapPractice()
 {
@@ -73,4 +90,5 @@ int main()
 {
 	STDHashMapPractice();
 	CustomHashMapPractice();
+	TemplateHashMapPractice();
 }
