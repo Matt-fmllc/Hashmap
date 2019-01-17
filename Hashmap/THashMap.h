@@ -17,7 +17,7 @@ public:
 	TNode*	pNext;
 
 	TNode(const K& key, const V& value) :
-		Key(key), Value(value)
+		Key(key), Value(value), pNext(nullptr)
 	{}
 	~TNode() {}
 };
@@ -60,15 +60,9 @@ int THashMap<K,V,iSize,F>::Put(const K& NewKey, const V& NewVal)
 	TNode<K, V>* Node = new TNode<K,V>(0,0);
 	Node->Key = NewKey;
 	Node->Value = NewVal;
-	if (m_pBuckets[HashVal]) {
-		// something exists in the bucket
-		Node->pNext = m_pBuckets[HashVal];
-		m_pBuckets[HashVal] = Node;
-	}
-	else {
-		// nohing exists in bucket
-		m_pBuckets[HashVal] = Node; 
-	}
+	Node->pNext = m_pBuckets[HashVal];
+	m_pBuckets[HashVal] = Node;
+	
 	return HashVal;
 }
 
@@ -82,20 +76,7 @@ bool THashMap<K,V,iSize,F>::Get(const K& Key, V& Value)
 	if (!m_pBuckets[HashVal])
 		return false;
 	TNode<K, V>* pNode = m_pBuckets[HashVal];
-
-	// handle non-overflow case( ie-> only 1 thing in the bucket )
-	if (pNode->pNext == nullptr) {
-		if (pNode->Key == Key) {
-			Value = pNode->Value;
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-	
-	// more than one thing in the bucket
-	while (pNode->pNext) {
+	while (pNode) {
 		if (pNode->Key == Key) {
 			Value = pNode->Value;
 			return true;

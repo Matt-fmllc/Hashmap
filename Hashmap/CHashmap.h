@@ -68,9 +68,6 @@ namespace Custom {
 
 	int CHashMap::GenerateBucketLocation(int _iValue)
 	{
-		//if (_iValue == 0)
-		//	return 0;
-
 		return _iValue % iNumBuckets;
 	}
 
