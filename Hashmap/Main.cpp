@@ -17,10 +17,12 @@ void TemplateHashMapPractice()
 	HashMap.Put(3, 7);
 	HashMap.Put(2, 3);
 
-	int iVal1, iVal2, iVal3, iVal4;
+	int iVal1, iVal2, iVal3, iVal4 = 0;
 	HashMap.Get(1, iVal1);
 	HashMap.Get(2, iVal2);
 	HashMap.Get(3, iVal3);
+
+	HashMap.Remove(2);
 	HashMap.Get(2, iVal4);
 
 	printf("\n iVal1 = %d, iVal2 = %d, iVal3 = %d, iVal4 = %d", iVal1, iVal2, iVal3, iVal4);

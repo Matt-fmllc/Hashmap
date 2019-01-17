@@ -109,5 +109,18 @@ bool THashMap<K,V,iSize,F>::Get(const K& Key, V& Value)
 template<typename K, typename V, size_t iSize, typename F = KeyHashFunc<K>>
 bool THashMap<K, V, iSize, F>::Remove(const K& Key)
 {
+	int iHashVal = HashFunc(Key);
+	if (iHashVal < 0)
+		return false;
+	
+	TNode<K, V>* pNode = m_pBuckets[iHashVal];
+	if (!pNode)
+		return false;
+	while (pNode) {
+		TNode<K, V>* pTemp = pNode->pNext;
+		delete pNode;
+		pNode = pTemp;
+	}
+	m_pBuckets[iHashVal] = nullptr;
 	return true;
 }
