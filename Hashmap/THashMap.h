@@ -48,6 +48,7 @@ public:
 
 	int Put( const K& NewKey, const V& NewValue);
 	bool Get( const K& Key, V& Value);
+	bool Remove(const K& Key);
 };
 
 template<typename K, typename V, size_t iSize, typename F = KeyHashFunc<K>>
@@ -59,7 +60,15 @@ int THashMap<K,V,iSize,F>::Put(const K& NewKey, const V& NewVal)
 	TNode<K, V>* Node = new TNode<K,V>(0,0);
 	Node->Key = NewKey;
 	Node->Value = NewVal;
-	m_pBuckets[HashVal] = Node;
+	if (m_pBuckets[HashVal]) {
+		// something exists in the bucket
+		Node->pNext = m_pBuckets[HashVal];
+		m_pBuckets[HashVal] = Node;
+	}
+	else {
+		// nohing exists in bucket
+		m_pBuckets[HashVal] = Node; 
+	}
 	return HashVal;
 }
 
@@ -69,6 +78,31 @@ bool THashMap<K,V,iSize,F>::Get(const K& Key, V& Value)
 	unsigned long HashVal = HashFunc(Key);
 	if (HashVal < 0)
 		return false;
-	Value = m_pBuckets[HashVal]->Value;
+	
+	if (!m_pBuckets[HashVal])
+		return false;
+	TNode<K, V>* pNode = m_pBuckets[HashVal];
+
+	// handle non-overflow case( ie-> only 1 thing in the bucket )
+	if (pNode->pNext == nullptr) {
+		Value = pNode->Key;
+		return true;
+	}
+	
+	// more than one thing in the bucket
+	while (pNode->pNext) {
+		if (pNode->Key == Key) {
+			Value = pNode->Value;
+			return true;
+		}
+		pNode = pNode->pNext;
+	}
+	// Not Found
+	return false;
+}
+
+template<typename K, typename V, size_t iSize, typename F = KeyHashFunc<K>>
+bool THashMap<K, V, iSize, F>::Remove(const K& Key)
+{
 	return true;
 }
