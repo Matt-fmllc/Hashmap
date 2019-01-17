@@ -85,8 +85,13 @@ bool THashMap<K,V,iSize,F>::Get(const K& Key, V& Value)
 
 	// handle non-overflow case( ie-> only 1 thing in the bucket )
 	if (pNode->pNext == nullptr) {
-		Value = pNode->Key;
-		return true;
+		if (pNode->Key == Key) {
+			Value = pNode->Value;
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	
 	// more than one thing in the bucket
