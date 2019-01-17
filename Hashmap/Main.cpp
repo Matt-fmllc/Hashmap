@@ -26,6 +26,31 @@ void TemplateHashMapPractice()
 	HashMap.Get(2, iVal4);
 
 	printf("\n iVal1 = %d, iVal2 = %d, iVal3 = %d, iVal4 = %d", iVal1, iVal2, iVal3, iVal4);
+
+
+	THashMap<int, int, 3, KeyHash<int, 3> > HashMap2;
+	HashMap2.Put(1, 1);
+	HashMap2.Put(2, 2);
+	HashMap2.Put(3, 3);
+	HashMap2.Put(7, 7);
+	HashMap2.Put(6, 6);
+	HashMap2.Put(4, 4);
+	HashMap2.Put(5, 5);
+
+	int iVal5 = 0, iVal6 = 0, iVal7 = 0;
+	HashMap2.Get(1, iVal1);
+	HashMap2.Get(2, iVal2);
+	HashMap2.Get(3, iVal3);
+
+	HashMap2.Remove(2);
+	HashMap2.Get(2, iVal4);
+	
+	HashMap2.Get(5, iVal5);
+	HashMap2.Get(6, iVal6);
+	HashMap2.Get(7, iVal7);
+
+	printf("\n iVal1 = %d, iVal2 = %d, iVal3 = %d, iVal4 = %d, iVal5 = %d, iVal6 = %d, iVal7 = %d", iVal1, iVal2, iVal3, iVal4, iVal5, iVal6, iVal7);
+
 }
 
 void CustomHashMapPractice()

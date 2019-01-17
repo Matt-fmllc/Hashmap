@@ -46,9 +46,9 @@ public:
 		}
 	}
 
-	int Put( const K& NewKey, const V& NewValue);
-	bool Get( const K& Key, V& Value);
-	bool Remove(const K& Key);
+	inline int Put( const K& NewKey, const V& NewValue);
+	inline bool Get( const K& Key, V& Value) const; 
+	inline bool Remove(const K& Key);
 };
 
 template<typename K, typename V, size_t iSize, typename F = KeyHashFunc<K>>
@@ -67,14 +67,12 @@ int THashMap<K,V,iSize,F>::Put(const K& NewKey, const V& NewVal)
 }
 
 template<typename K, typename V, size_t iSize, typename F = KeyHashFunc<K>>
-bool THashMap<K,V,iSize,F>::Get(const K& Key, V& Value)
+bool THashMap<K,V,iSize,F>::Get(const K& Key, V& Value) const
 {
 	unsigned long HashVal = HashFunc(Key);
 	if (HashVal < 0)
 		return false;
-	
-	if (!m_pBuckets[HashVal])
-		return false;
+
 	TNode<K, V>* pNode = m_pBuckets[HashVal];
 	while (pNode) {
 		if (pNode->Key == Key) {
@@ -95,13 +93,36 @@ bool THashMap<K, V, iSize, F>::Remove(const K& Key)
 		return false;
 	
 	TNode<K, V>* pNode = m_pBuckets[iHashVal];
+	TNode<K, V>* pNewList = nullptr;
+	// technically don't need this check, but
+	// want to indicate nothing was deleted
+	// when the bucket is empty
+	// if I let it fall through, it will return
+	// a false positive
 	if (!pNode)
 		return false;
+
+	// delete the nodes that match keys
 	while (pNode) {
 		TNode<K, V>* pTemp = pNode->pNext;
-		delete pNode;
+		if (pNode->Key == Key) {
+			// keys match, delete this node
+			delete pNode;
+		}
+		else if (!pNewList) {
+			// keys did not match, this node 
+			// is first in list, start the new list
+			pNewList = pNode;
+			pNewList->pNext = nullptr;
+		}
+		else {
+			// this node is to be kept, keys did not match
+			// add this node to the list
+			pNode->pNext = pNewList;
+			pNewList = pNode;
+		}
 		pNode = pTemp;
 	}
-	m_pBuckets[iHashVal] = nullptr;
+	m_pBuckets[iHashVal] = pNewList;
 	return true;
 }
