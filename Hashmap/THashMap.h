@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mutex>
+#include <memory>
 
 namespace HashMapTemplate {
 
@@ -58,6 +60,8 @@ namespace HashMapTemplate {
 		TNode<K, V>*	m_pBuckets[iSize];
 		F				HashFunc;
 
+		std::mutex		m_Mutex;
+
 
 	protected:
 	public:
@@ -76,15 +80,17 @@ namespace HashMapTemplate {
 		}
 
 		inline virtual  int Put(const K& NewKey, const V& NewValue);
-		inline virtual bool Get(const K& Key, V& Value) const;
+		inline virtual bool Get(const K& Key, V& Value);
 		inline virtual bool Remove(const K& Key);
 	};
 
 	// Put
 	// Adds an element to the hash map
-	template<typename K, typename V, size_t iSize, typename F = KeyHashFunc<K>>
+	template<typename K, typename V, size_t iSize, typename F = KeyHashFunc<K,iSize>>
 	int THashMap<K, V, iSize, F>::Put(const K& NewKey, const V& NewVal)
 	{
+		std::lock_guard<std::mutex> lock(m_Mutex);
+
 		unsigned long HashVal = HashFunc(NewKey);
 		if (HashVal < 0)
 			return -1;
@@ -100,9 +106,11 @@ namespace HashMapTemplate {
 
 	// Get
 	// Retrieves an element from the hash map
-	template<typename K, typename V, size_t iSize, typename F = KeyHashFunc<K>>
-	bool THashMap<K, V, iSize, F>::Get(const K& Key, V& Value) const
+	template<typename K, typename V, size_t iSize, typename F = KeyHashFunc<K,iSize>>
+	bool THashMap<K, V, iSize, F>::Get(const K& Key, V& Value)
 	{
+		std::lock_guard<std::mutex> lock(m_Mutex);
+
 		unsigned long HashVal = HashFunc(Key);
 		if (HashVal < 0)
 			return false;
@@ -122,9 +130,11 @@ namespace HashMapTemplate {
 
 	// Remove
 	// Removes an element from the hash map
-	template<typename K, typename V, size_t iSize, typename F = KeyHashFunc<K>>
+	template<typename K, typename V, size_t iSize, typename F = KeyHashFunc<K,iSize>>
 	bool THashMap<K, V, iSize, F>::Remove(const K& Key)
 	{
+		std::lock_guard<std::mutex> lock(m_Mutex);
+
 		int iHashVal = HashFunc(Key);
 		if (iHashVal < 0)
 			return false;
