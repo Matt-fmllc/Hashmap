@@ -3,6 +3,9 @@
 
 namespace HashMapTemplate {
 
+
+	// Hash Function
+	// simple hash implementation across the range of buckets
 	template<typename K, size_t iSize>
 	struct KeyHash {
 		virtual unsigned long operator()(const K& Key) const
@@ -11,6 +14,11 @@ namespace HashMapTemplate {
 		}
 	};
 
+
+	// Hash Map Node (Template)
+	// Data element of the map
+	// maintains the map structure
+	// stores the data element
 
 	template<typename K, typename V>
 	class TNode {
@@ -25,12 +33,30 @@ namespace HashMapTemplate {
 		~TNode() {}
 	};
 
+
+	// Template Hash Map
+	// O(n) = O(1) 
+	// Note* - only if bucket is empty, overflow case adds cost
+	// as an example, 1024 elements in a single bucket
+	// Still consider this as O(1)
+	//
+	// Generic Hash Map
+	// Basic Methods
+	//		Put - Adds an element to the Hash Map
+	//		Get - Retrieves an element from the Hash Map
+	//		Remove - Removes an element from the Hash Map
+	//
+	// User must implement the Hash function
+	// Since the objects are an unknown type
+	// an example, or a default one, exists 
+	// for use at the top of the file
+
 	template<typename K, typename V, size_t iSize, typename F = KeyHashFunc<K, iSize> >
 	class THashMap
 	{
 	private:
 		TNode<K, V>*	m_pBuckets[iSize];
-		F			HashFunc;
+		F				HashFunc;
 
 
 	protected:
@@ -49,11 +75,13 @@ namespace HashMapTemplate {
 			}
 		}
 
-		inline int Put(const K& NewKey, const V& NewValue);
-		inline bool Get(const K& Key, V& Value) const;
-		inline bool Remove(const K& Key);
+		inline virtual  int Put(const K& NewKey, const V& NewValue);
+		inline virtual bool Get(const K& Key, V& Value) const;
+		inline virtual bool Remove(const K& Key);
 	};
 
+	// Put
+	// Adds an element to the hash map
 	template<typename K, typename V, size_t iSize, typename F = KeyHashFunc<K>>
 	int THashMap<K, V, iSize, F>::Put(const K& NewKey, const V& NewVal)
 	{
@@ -69,6 +97,9 @@ namespace HashMapTemplate {
 		return HashVal;
 	}
 
+
+	// Get
+	// Retrieves an element from the hash map
 	template<typename K, typename V, size_t iSize, typename F = KeyHashFunc<K>>
 	bool THashMap<K, V, iSize, F>::Get(const K& Key, V& Value) const
 	{
@@ -88,6 +119,9 @@ namespace HashMapTemplate {
 		return false;
 	}
 
+
+	// Remove
+	// Removes an element from the hash map
 	template<typename K, typename V, size_t iSize, typename F = KeyHashFunc<K>>
 	bool THashMap<K, V, iSize, F>::Remove(const K& Key)
 	{
