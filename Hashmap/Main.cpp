@@ -6,6 +6,8 @@
 
 #include "THashmap.h"
 
+using namespace HashMapTemplate;
+
 void TemplateHashMapPractice()
 {
 //	THashMap<int, int, 1024, THashMap<typename K,typename V,size_t 1024,typename F>::KeyHash> HashMap;
