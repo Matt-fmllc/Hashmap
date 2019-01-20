@@ -29,7 +29,7 @@ namespace HashMapTemplate {
 		V		Value;
 		TNode*	pNext;
 
-		TNode(const K& key, const V& value) :
+		TNode(const K& key, const V& value) noexcept :
 			Key(key), Value(value), pNext(nullptr)
 		{}
 		~TNode() {}
@@ -65,7 +65,7 @@ namespace HashMapTemplate {
 
 	protected:
 	public:
-		THashMap() :
+		THashMap() noexcept :
 			m_pBuckets{ 0 }
 		{
 
